@@ -1,0 +1,6 @@
+const preference=matchMedia('(prefers-reduced-motion: reduce)');
+const elements=document.querySelectorAll('.index > div,.row,.about > div');
+elements.forEach(el=>el.classList.add('reveal'));
+if(!preference.matches && 'IntersectionObserver' in window){document.body.classList.add('animate');const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.08});elements.forEach(el=>observer.observe(el))}
+const motion=document.getElementById('motion');let paused=preference.matches;document.body.classList.toggle('paused',paused);function label(){motion.textContent=paused?'Enable animations':'Pause animations';motion.setAttribute('aria-pressed',String(paused))}label();motion.addEventListener('click',()=>{paused=!paused;document.body.classList.toggle('paused',paused);label()});preference.addEventListener('change',e=>{paused=e.matches;document.body.classList.toggle('paused',paused);label()});
+let pending=false;addEventListener('scroll',()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{const max=document.documentElement.scrollHeight-innerHeight;document.querySelector('.progress').style.width=(max>0?scrollY/max*100:0)+'%';pending=false})},{passive:true});
